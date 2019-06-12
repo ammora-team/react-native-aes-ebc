@@ -1,5 +1,5 @@
 
-# react-native-react-native-aes-ebc
+# react-native-aes-ebc
 
 ## Getting started
 
