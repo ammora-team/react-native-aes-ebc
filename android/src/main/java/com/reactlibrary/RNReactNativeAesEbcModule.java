@@ -23,11 +23,11 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
   public String encrypt(String message, String key) {
     byte[] crypted = null;
 		try {
-			SecretKeySpec skey = new SecretKeySpec(key.getBytes(), "AES");
+			SecretKeySpec skey = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
 			
-			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+			Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
 			cipher.init(Cipher.ENCRYPT_MODE, skey);
-			crypted = cipher.doFinal(message.getBytes());
+			crypted = cipher.doFinal(message.getBytes("UTF-8"));
 		} catch (Exception e) {
 			FLog.e(TAG, e.toString());
 		}
