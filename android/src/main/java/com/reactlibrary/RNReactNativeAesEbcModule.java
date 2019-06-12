@@ -4,14 +4,14 @@ package com.reactlibrary;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.Callback;
+import com.facebook.common.logging.FLog;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64.*;
 
 public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
-
+  private static final String TAG = "RNReactNativeAesEbc";
   private final ReactApplicationContext reactContext;
 
   public RNReactNativeAesEbcModule(ReactApplicationContext reactContext){
@@ -29,7 +29,7 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
 			cipher.init(Cipher.ENCRYPT_MODE, skey);
 			crypted = cipher.doFinal(message.getBytes());
 		} catch (Exception e) {
-			System.out.println(e.toString());
+			FLog.e(TAG, e.toString());
 		}
 		java.util.Base64.Encoder encoder = java.util.Base64.getEncoder();
 		
