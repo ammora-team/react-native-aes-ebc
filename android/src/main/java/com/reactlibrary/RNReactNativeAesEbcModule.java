@@ -20,19 +20,19 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
     this.reactContext = reactContext;
   }
 
-  @ReactMethod
+ @ReactMethod
   public String encrypt(String message, ReadableArray bytes) {
     byte[] key = new byte[32];
-    for (int i = 0; i < bytes.size(); i++) {
-      key[i] = (byte) bytes.getInt(i);
-    }
     byte[] crypted = null;
 		try {
+      for (int i = 0; i < bytes.size(); i++) {
+        key[i] = (byte) bytes.getInt(i);
+      }
+
 			SecretKeySpec skey = new SecretKeySpec(key, "AES");
-			
-			Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 			cipher.init(Cipher.ENCRYPT_MODE, skey);
-			crypted = cipher.doFinal(message.getBytes("UTF-8"));
+			crypted = cipher.doFinal(message.getBytes());
 		} catch (Exception e) {
 			FLog.e(TAG, e.toString());
 		}
