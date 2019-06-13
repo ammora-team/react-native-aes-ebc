@@ -4,6 +4,7 @@ package com.reactlibrary;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.common.logging.FLog;
 
@@ -21,7 +22,7 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
   }
 
  @ReactMethod
-  public String encrypt(String message, ReadableArray bytes) {
+  public void encrypt(String message, ReadableArray bytes, Promise promise) {
     byte[] key = new byte[32];
     byte[] crypted = null;
 		try {
@@ -35,10 +36,11 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
 			crypted = cipher.doFinal(message.getBytes());
 		} catch (Exception e) {
 			FLog.e(TAG, e.toString());
+      promise.reject(e);
 		}
 		java.util.Base64.Encoder encoder = java.util.Base64.getEncoder();
 		
-		return new String(encoder.encodeToString(crypted));
+		promise.resolve(new String(encoder.encodeToString(crypted)));
   }
 
   @Override
