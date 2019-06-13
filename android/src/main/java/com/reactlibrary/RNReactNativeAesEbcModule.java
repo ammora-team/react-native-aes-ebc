@@ -24,7 +24,7 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
   public String encrypt(String message, ReadableArray bytes) {
     byte[] key = new byte[32];
     for (int i = 0; i < bytes.size(); i++) {
-      key[i] = (byte) bytes.getString(i);
+      key[i] = (byte) bytes.getInt(i);
     }
     byte[] crypted = null;
 		try {
