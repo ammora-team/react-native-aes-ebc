@@ -4,6 +4,7 @@ package com.reactlibrary;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.common.logging.FLog;
 
 import javax.crypto.Cipher;
@@ -20,7 +21,11 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public String encrypt(String message, byte[] key) {
+  public String encrypt(String message, ReadableArray bytes) {
+    byte[] key = new byte[32];
+    for (int i = 0; i < bytes.size(); i++) {
+      key[i] = bytes.getInt(i);
+    }
     byte[] crypted = null;
 		try {
 			SecretKeySpec skey = new SecretKeySpec(key, "AES");
