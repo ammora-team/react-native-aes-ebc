@@ -10,7 +10,7 @@ import com.facebook.common.logging.FLog;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import java.util.Base64.*;
+import java.util.Base64;
 
 public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
   private static final String TAG = "RNReactNativeAesEbc";
