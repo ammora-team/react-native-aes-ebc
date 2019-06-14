@@ -30,17 +30,17 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
         key[i] = (byte) bytes.getInt(i);
       }
 
-			SecretKeySpec skey = new SecretKeySpec(key, "AES");
-			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-			cipher.init(Cipher.ENCRYPT_MODE, skey);
-			crypted = cipher.doFinal(message.getBytes());
-		} catch (Exception e) {
-			FLog.e(TAG, e.toString());
+      SecretKeySpec skey = new SecretKeySpec(key, "AES");
+      Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+      cipher.init(Cipher.ENCRYPT_MODE, skey);
+      crypted = cipher.doFinal(message.getBytes());
+    } catch (Exception e) {
+      FLog.e(TAG, e.toString());
       promise.reject(e);
-		}
-		java.util.Base64.Encoder encoder = java.util.Base64.getEncoder();
-		
-		promise.resolve(new String(encoder.encodeToString(crypted)));
+    }
+    Base64.Encoder encoder = Base64.getEncoder();
+
+    promise.resolve(new String(encoder.encodeToString(crypted)));
   }
 
   @Override
