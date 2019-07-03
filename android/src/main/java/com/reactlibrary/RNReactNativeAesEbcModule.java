@@ -66,7 +66,7 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void encryptGps(ReadableArray message, ReadableArray keys, int block, Promise promise) {
+  public void encryptGps(ReadableArray message, ReadableArray keys, Promise promise) {
     /*List<Byte> bytes = new ArrayList<>(message.size());
     for (int i = 0; i < message.size(); i++) {
       ReadableType type = message.getType(i);
@@ -80,21 +80,22 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
       }
     }*/
 
+    int block = 1;
     List<Byte> bytesList = new ArrayList<Byte>(16 * block);
     byte[] bytesArr = new byte[16 * block];
-
     int SIZE = 6;
+
     for (int i = 0; i < block; i++) {
-      int length = (SIZE * i) + i;
+      int indexSize = (SIZE * i) + i;
 
-      intToBytes(message.getInt(0 + length), bytesList); // time
-      toByteArray((float) message.getDouble(1 + length), bytesList);
-      toByteArray((float) message.getDouble(2 + length), bytesList);
+      intToBytes(message.getInt(0 + indexSize), bytesList); // time
+      toByteArray((float) message.getDouble(1 + indexSize), bytesList);
+      toByteArray((float) message.getDouble(2 + indexSize), bytesList);
 
-      bytesList.add((byte) message.getInt(3 + length));
-      bytesList.add((byte) message.getInt(4 + length));
-      bytesList.add((byte) message.getInt(5 + length));
-      bytesList.add((byte) message.getInt(6 + length));
+      bytesList.add((byte) message.getInt(3 + indexSize));
+      bytesList.add((byte) message.getInt(4 + indexSize));
+      bytesList.add((byte) message.getInt(5 + indexSize));
+      bytesList.add((byte) message.getInt(6 + indexSize));
     }
 
     for (int i = 0; i < bytesList.size(); i++) {
