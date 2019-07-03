@@ -111,7 +111,7 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
       }
 
       SecretKeySpec skey = new SecretKeySpec(key, "AES");
-      Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+      Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
       cipher.init(Cipher.ENCRYPT_MODE, skey);
       crypted = cipher.doFinal(bytesArr);
 
