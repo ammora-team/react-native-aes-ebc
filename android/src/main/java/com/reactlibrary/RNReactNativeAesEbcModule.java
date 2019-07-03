@@ -27,19 +27,19 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
 
   protected void intToBytes(int x, List<Byte> bytesAppend) {
     for (int i = 0; x != 0; i++, x >>>= 8) {
-      bytesAppend.add((byte) (x & 0xFF));   
+      bytesAppend.add((byte) (x & 0xFF));
     }
-  }
+	}
 
-  protected void toByteArray(float value, List<Byte> bytesAppend) {
-    ByteBuffer byteBuffer = ByteBuffer.allocate(4);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    byteBuffer.putFloat(value);
+	protected void toByteArray(float value, List<Byte> bytesAppend) {
+		ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+		byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+		byteBuffer.putFloat(value);
     byte[] inByteBufferArray = byteBuffer.array();
 
-    for (int i = 0; i < 4; i++) {
-      bytesAppend.add(inByteBufferArray[i]);
-    }
+		for (int i = 0; i < 4; i++) {
+			bytesAppend.add(inByteBufferArray[i]);
+		}
   }
 
   @ReactMethod
@@ -65,7 +65,7 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void encryptGps(ReadableArray message, ReadableArray keys, int block, Promise promise) {
+  public void encryptGps(ReadableArray message, ReadableArray keys, int blocks, Promise promise) {
     /*List<Byte> bytes = new ArrayList<>(message.size());
     for (int i = 0; i < message.size(); i++) {
       ReadableType type = message.getType(i);
@@ -79,12 +79,11 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
       }
     }*/
 
-    // FLog.e(TAG, String.valueOf(block));
-    List<Byte> bytesList = new ArrayList<Byte>(16 * block);
-    byte[] bytesArr = new byte[16 * block];
+    List<Byte> bytesList = new ArrayList<Byte>(16 * blocks);
+    byte[] bytesArr = new byte[16 * blocks];
 
     int SIZE = 6;
-    for (int i = 0; i < block; i++) {
+    for (int i = 0; i < blocks; i++) {
       int length = ((SIZE * i) + i);
       intToBytes(message.getInt(0 + length), bytesList); // time
       toByteArray((float) message.getDouble(1 + length), bytesList);
@@ -104,7 +103,7 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
   }
 
   protected void encrypt(byte[] bytesArr, ReadableArray keys, Promise promise) {
-    try {
+		try {
       byte[] crypted = null;
       byte[] key = new byte[32];
       for (int i = 0; i < keys.size(); i++) {
