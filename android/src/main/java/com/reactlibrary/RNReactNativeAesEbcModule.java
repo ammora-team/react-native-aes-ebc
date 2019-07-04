@@ -32,6 +32,17 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
     }
 	}
 
+  protected void shortBytes(int value, List<Byte> bytesAppend) {
+    ByteBuffer buf = ByteBuffer.allocate(2);
+    buf.order(ByteOrder.LITTLE_ENDIAN);
+    buf.putShort((short) value);
+    byte[] bytes = buf.array();
+    
+    for (int i = 0; i < 2; i++) {
+			bytesAppend.add(bytes[i]);
+		}
+  }
+
 	protected void toByteArray(float value, List<Byte> bytesAppend) {
 		ByteBuffer byteBuffer = ByteBuffer.allocate(4);
 		byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -45,28 +56,98 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void encryptSensors(ReadableArray message, ReadableArray keys, Promise promise) {
-    List<Byte> bytes = new ArrayList<>(message.size());
-    for (int i = 0; i < message.size(); i++) {
-      ReadableType type = message.getType(i);
-      if (type == ReadableType.Number) {
-        bytes.add((byte) message.getInt(i));
-      } else {
-        for (byte b :message.getString(i).getBytes()) {
-          bytes.add(b);
-        }
-      }
+    List<Byte> bytesList = new ArrayList<Byte>(64);
+    byte[] bytesArr = new byte[64];
+
+    // 0 - 14
+    for (byte b: message.getString(0).getBytes()) {
+      bytesList.add(b);
     }
 
-    byte[] bytesArr = new byte[64];
-    for (int i = 0; i < bytes.size(); i++) {
-      bytesArr[i] = bytes.get(i);
+    // 15
+    for (byte b: "0".getBytes()) {
+      bytesList.add(b);
+    }
+
+    // 16
+    for (byte b: "0".getBytes()) {
+      bytesList.add(b);
+    }
+
+    // 17
+    for (byte b: "0".getBytes()) {
+      bytesList.add(b);
+    }
+
+    // baterry 18-19
+    shortBytes(message.getInt(1), bytesList);
+
+    // if charger 20
+    for (byte b: message.getString(2).getBytes()) {
+      bytesList.add(b);
+    }
+
+    // temperature 21
+    bytesList.add((byte) 0);
+
+    // mem write 22-23
+    shortBytes(message.getInt(3), bytesList);
+
+    // mem read 24-25
+    shortBytes(message.getInt(4), bytesList);
+
+    // accel 26
+    bytesList.add((byte) message.getInt(5));
+
+    // rede 27
+    bytesList.add((byte) message.getInt(6));
+
+    // fibra 28-29
+    shortBytes(0, bytesList);
+
+    // case 30-31
+    shortBytes(0, bytesList);
+
+    // panic 32
+    for (byte b: message.getString(7).getBytes()) {
+      bytesList.add(b);
+    }
+
+    // 33 case
+    for (byte b: "0".getBytes()) {
+      bytesList.add(b);
+    }
+
+    // gps 34
+    bytesList.add((byte) 0);
+
+    // satellites 35
+    bytesList.add((byte) 0);
+
+    // id fail 36
+    for (byte b: "0".getBytes()) {
+      bytesList.add(b);
+    }
+
+    // carrier 37
+    for (byte b: message.getString(8).getBytes()) {
+      bytesList.add(b);
+    }
+
+    // iccid 38
+    for (byte b: message.getString(9).getBytes()) {
+      bytesList.add(b);
+    }
+
+    for (int i = 0; i < bytesList.size(); i++) {
+      bytesArr[i] = bytesList.get(i);
     }
 
     encrypt(bytesArr, keys, promise);
   }
 
   @ReactMethod
-  public void encryptGps(ReadableArray message, ReadableArray keys, Promise promise) {
+  public void encryptGps(ReadableArray message, ReadableArray keys, int blocks, Promise promise) {
     /*List<Byte> bytes = new ArrayList<>(message.size());
     for (int i = 0; i < message.size(); i++) {
       ReadableType type = message.getType(i);
@@ -80,12 +161,11 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
       }
     }*/
 
-    int block = 1;
-    List<Byte> bytesList = new ArrayList<Byte>(16 * block);
-    byte[] bytesArr = new byte[16 * block];
+    List<Byte> bytesList = new ArrayList<Byte>(16 * blocks);
+    byte[] bytesArr = new byte[16 * blocks];
     int SIZE = 6;
-
-    for (int i = 0; i < block; i++) {
+        
+    for (int i = 0; i < blocks; i++) {
       int indexSize = (SIZE * i) + i;
 
       intToBytes(message.getInt(0 + indexSize), bytesList); // time
