@@ -34,7 +34,7 @@ public class RNReactNativeAesEbcModule extends ReactContextBaseJavaModule {
 
   protected void shortBytes(int value, List<Byte> bytesAppend) {
     ByteBuffer buf = ByteBuffer.allocate(2);
-    buf.order(ByteOrder.LITTLE_ENDIAN);
+    // buf.order(ByteOrder.LITTLE_ENDIAN);
     buf.putShort((short) value);
     byte[] bytes = buf.array();
     
